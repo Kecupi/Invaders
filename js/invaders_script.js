@@ -9,6 +9,7 @@ var GameArea = {
         this.interval = setInterval(this.updateGameArea, 10);
         Hrac = new Player (50, 50, "images/player.gif");
         Enemies = [];
+        Bullets = [];
         window.addEventListener('keydown', function (e) {
             GameArea.keys = (GameArea.keys || []);
             GameArea.keys[e.key] = true;
@@ -33,6 +34,9 @@ var GameArea = {
         for (let i=0;i<Enemies.length;i++){
             Enemies[i].update();
         }
+        for (let i=0;i<Bullets.length;i++){
+            Bullets[i].update();
+        }
         Hrac.changePos();
     }
 }
@@ -51,10 +55,11 @@ class Player{
     changePos(){
         Hrac.speedX = 0;
         Hrac.speedY = 0;
-        if (GameArea.keys && GameArea.keys['ArrowLeft'] && Hrac.x>10) {Hrac.speedX = -15; }
-        if (GameArea.keys && GameArea.keys['ArrowRight'] && Hrac.x<(window.innerWidth - 70)) {Hrac.speedX = 15; }
-        if (GameArea.keys && GameArea.keys['ArrowUp'] && Hrac.y>10) {Hrac.speedY = -15; }
-        if (GameArea.keys && GameArea.keys['ArrowDown'] && Hrac.y<(window.innerHeight-70)) {Hrac.speedY = 15; }
+        if (GameArea.keys && GameArea.keys['ArrowLeft'] && Hrac.x>10) {Hrac.speedX = -15;};
+        if (GameArea.keys && GameArea.keys['ArrowRight'] && Hrac.x<(window.innerWidth - 70)) {Hrac.speedX = 15;};
+        if (GameArea.keys && GameArea.keys['ArrowUp'] && Hrac.y>10) {Hrac.speedY = -15;};
+        if (GameArea.keys && GameArea.keys['ArrowDown'] && Hrac.y<(window.innerHeight-70)) {Hrac.speedY = 15;};
+        if (GameArea.keys && GameArea.keys[" "]) {Bullets.push(new Bullet(this.x,this.y,"images/bullet.png"));};
         this.x += this.speedX;
         this.y += this.speedY;
         this.update();
@@ -76,6 +81,19 @@ class Enemy{
     update(){
         this.x -= this.speedX;
         this.y -= this.speedY; 
+        GameArea.context.drawImage(this.image, this.x, this.y);
+    }
+}
+class Bullet{
+    constructor(x,y, imgsrc){
+        this.x = x;
+        this.y = y;
+        this.speedX = 10;
+        this.image = new Image;
+        this.image.src = imgsrc; 
+    }
+    update(){
+        this.x += this.speedX;
         GameArea.context.drawImage(this.image, this.x, this.y);
     }
 }
