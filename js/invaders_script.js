@@ -7,7 +7,8 @@ var GameArea = {
         document.body.insertBefore(this.canvas, document.body.childNodes[0]);
         this.frameNumber = 0;
         this.interval = setInterval(this.updateGameArea, 10);
-        Hrac = new Player (50, 50);
+        Hrac = new Player (50, 50, "images/player.gif");
+        Enemak = new Enemy ("images/enemy.png")
         window.addEventListener('keydown', function (e) {
             GameArea.keys = (GameArea.keys || []);
             GameArea.keys[e.key] = true;
@@ -33,16 +34,17 @@ var GameArea = {
         if (GameArea.keys && GameArea.keys['ArrowDown'] && Hrac.y<(window.innerHeight-70)) {Hrac.speedY = 15; }
         Hrac.changePos();
         Hrac.update();
+        Enemak.update();
     }
 }
 class Player{
-    constructor(x, y){
+    constructor(x, y, imgsrc){
         this.x = x;
         this.y = y;
         this.speedX = 0;
         this.speedY = 0;
         this.image = new Image;
-        this.image.src = "images/player.gif";
+        this.image.src = imgsrc;
     }
     update(){
         GameArea.context.drawImage(this.image, this.x, this.y);
@@ -52,4 +54,20 @@ class Player{
         this.y += this.speedY; 
     }
 }
-var Hrac;
+class Enemy{
+    constructor(imgsrc){
+        this.x = 200;
+        this.y = 200;
+        this.speedX = 0;
+        this.speedY = 0;
+        this.image = new Image;
+        this.image.src = imgsrc;
+    }
+    update(){
+        GameArea.context.drawImage(this.image, this.x, this.y);
+    }
+    changePos(){
+        this.x -= this.speedX;
+        this.y -= this.speedY; 
+    }
+}
