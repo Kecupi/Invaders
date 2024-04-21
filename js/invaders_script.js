@@ -7,7 +7,7 @@ var GameArea = {
         document.body.insertBefore(this.canvas, document.body.childNodes[0]);
         this.frameNumber = 0;
         this.interval = setInterval(this.updateGameArea, 10);
-        Hrac = new Player (50, 40, "green", 100, 120);
+        Hrac = new Player (50, 50);
         window.addEventListener('keydown', function (e) {
             GameArea.keys = (GameArea.keys || []);
             GameArea.keys[e.key] = true;
@@ -27,27 +27,25 @@ var GameArea = {
         GameArea.clear();
         Hrac.speedX = 0;
         Hrac.speedY = 0;
-        if (GameArea.keys && GameArea.keys['ArrowLeft'] && Hrac.x>0) {Hrac.speedX = -10; }
-        if (GameArea.keys && GameArea.keys['ArrowRight'] && Hrac.x < GameArea.canvas.width - Hrac.width) {Hrac.speedX = 10; }
-        if (GameArea.keys && GameArea.keys['ArrowUp'] && Hrac.y>0) {Hrac.speedY = -10; }
-        if (GameArea.keys && GameArea.keys['ArrowDown'] && Hrac.y < GameArea.canvas.height - Hrac.height) {Hrac.speedY = 10; }
+        if (GameArea.keys && GameArea.keys['ArrowLeft'] && Hrac.x>0) {Hrac.speedX = -20; }
+        if (GameArea.keys && GameArea.keys['ArrowRight']) {Hrac.speedX = 20; }
+        if (GameArea.keys && GameArea.keys['ArrowUp'] && Hrac.y>0) {Hrac.speedY = -20; }
+        if (GameArea.keys && GameArea.keys['ArrowDown']) {Hrac.speedY = 20; }
         Hrac.changePos();
         Hrac.update();
     }
 }
 class Player{
-    constructor(width, height, color, x, y){
-        this.width = width;
-        this.height = height;
-        this.color = color;
+    constructor(x, y){
         this.x = x;
         this.y = y;
         this.speedX = 0;
         this.speedY = 0;
+        this.image = new Image;
+        this.image.src = "images/player.gif";
     }
     update(){
-            GameArea.context.fillStyle = this.color;
-            GameArea.context.fillRect(this.x, this.y, this.width, this.height);
+        GameArea.context.drawImage(this.image, this.x, this.y);
     }
     changePos(){
         this.x += this.speedX;
