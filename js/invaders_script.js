@@ -8,7 +8,7 @@ var GameArea = {
         this.frameNumber = 0;
         this.interval = setInterval(this.updateGameArea, 10);
         Hrac = new Player (50, 50, "images/player.gif");
-        Enemak = new Enemy ("images/enemy.png")
+        Enemies = [];
         window.addEventListener('keydown', function (e) {
             GameArea.keys = (GameArea.keys || []);
             GameArea.keys[e.key] = true;
@@ -26,15 +26,14 @@ var GameArea = {
     },
     updateGameArea: function(){
         GameArea.clear();
-        Hrac.speedX = 0;
-        Hrac.speedY = 0;
-        if (GameArea.keys && GameArea.keys['ArrowLeft'] && Hrac.x>10) {Hrac.speedX = -15; }
-        if (GameArea.keys && GameArea.keys['ArrowRight'] && Hrac.x<(window.innerWidth - 70)) {Hrac.speedX = 15; }
-        if (GameArea.keys && GameArea.keys['ArrowUp'] && Hrac.y>10) {Hrac.speedY = -15; }
-        if (GameArea.keys && GameArea.keys['ArrowDown'] && Hrac.y<(window.innerHeight-70)) {Hrac.speedY = 15; }
+        GameArea.frameNumber +=1
+        if (GameArea.frameNumber/300 !=1){
+            Enemies.push(new Enemy("images/enemy.png"))
+        }
+        for (let i=0;i<Enemies.length;i++){
+            Enemies[i].update();
+        }
         Hrac.changePos();
-        Hrac.update();
-        Enemak.update();
     }
 }
 class Player{
@@ -50,8 +49,15 @@ class Player{
         GameArea.context.drawImage(this.image, this.x, this.y);
     }
     changePos(){
+        Hrac.speedX = 0;
+        Hrac.speedY = 0;
+        if (GameArea.keys && GameArea.keys['ArrowLeft'] && Hrac.x>10) {Hrac.speedX = -15; }
+        if (GameArea.keys && GameArea.keys['ArrowRight'] && Hrac.x<(window.innerWidth - 70)) {Hrac.speedX = 15; }
+        if (GameArea.keys && GameArea.keys['ArrowUp'] && Hrac.y>10) {Hrac.speedY = -15; }
+        if (GameArea.keys && GameArea.keys['ArrowDown'] && Hrac.y<(window.innerHeight-70)) {Hrac.speedY = 15; }
         this.x += this.speedX;
-        this.y += this.speedY; 
+        this.y += this.speedY;
+        this.update();
     }
 }
 class Enemy{
