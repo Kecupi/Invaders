@@ -27,10 +27,10 @@ var GameArea = {
         GameArea.clear();
         Hrac.speedX = 0;
         Hrac.speedY = 0;
-        if (GameArea.keys && GameArea.keys['ArrowLeft'] && Hrac.x>0) {Hrac.speedX = -20; }
-        if (GameArea.keys && GameArea.keys['ArrowRight']) {Hrac.speedX = 20; }
-        if (GameArea.keys && GameArea.keys['ArrowUp'] && Hrac.y>0) {Hrac.speedY = -20; }
-        if (GameArea.keys && GameArea.keys['ArrowDown']) {Hrac.speedY = 20; }
+        if (GameArea.keys && GameArea.keys['ArrowLeft'] && Hrac.x>10) {Hrac.speedX = -15; }
+        if (GameArea.keys && GameArea.keys['ArrowRight'] && Hrac.x<(window.innerWidth - 70)) {Hrac.speedX = 15; }
+        if (GameArea.keys && GameArea.keys['ArrowUp'] && Hrac.y>10) {Hrac.speedY = -15; }
+        if (GameArea.keys && GameArea.keys['ArrowDown'] && Hrac.y<(window.innerHeight-70)) {Hrac.speedY = 15; }
         Hrac.changePos();
         Hrac.update();
     }
