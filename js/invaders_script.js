@@ -56,18 +56,20 @@ class Player{
 }
 class Enemy{
     constructor(imgsrc){
-        this.x = 200;
-        this.y = 200;
-        this.speedX = 0;
-        this.speedY = 0;
+        this.x = Math.floor(Math.random()*(window.innerWidth*0.9-0.8*window.innerWidth)+window.innerWidth*0.8)
+        this.y = Math.floor(Math.random()*window.innerHeight);
+        if (this.y>=(window.innerHeight/2)){
+            this.speedY = Math.floor(Math.random()*(3));
+        } else {
+            this.speedY = Math.floor(Math.random()*(-3));
+        };
+        this.speedX = Math.floor(Math.random()*(5)+10);
         this.image = new Image;
         this.image.src = imgsrc;
     }
     update(){
-        GameArea.context.drawImage(this.image, this.x, this.y);
-    }
-    changePos(){
         this.x -= this.speedX;
         this.y -= this.speedY; 
+        GameArea.context.drawImage(this.image, this.x, this.y);
     }
 }
