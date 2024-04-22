@@ -64,6 +64,13 @@ class Player{
         this.x += this.speedX;
         this.y += this.speedY;
         this.update();
+        this.crash();
+    }
+    crash(){
+        for (let i=0;i<Enemies.length;i++){
+            if ((Enemies[i].x + Enemies[i].image.width >= this.x && Enemies[i].x <= this.x + this.image.width) && ((Enemies[i].y + Enemies[i].image.height >= this.y && Enemies[i].y <= this.y + this.image.height) ||(this.y + this.image.height >= Enemies[i].y && this.y <= Enemies[i].y + Enemies[i].image.height)))
+                {GameArea.stop()}
+        }
     }
 }
 class Enemy{
