@@ -64,7 +64,8 @@ class Player{
         if (GameArea.keys && GameArea.keys['ArrowDown'] && Hrac.y<(window.innerHeight-70)) {Hrac.speedY = 15;};
         if (this.bulletRate>=20){
             if (GameArea.keys && GameArea.keys[" "]) {
-            Bullets.push(new Bullet(this.x,this.y,"images/bullet.png"));
+            Bullets.push(new Bullet(this.x + this.image.width,this.y,"images/bullet.png"));
+            Bullets.push(new Bullet(this.x + this.image.width,this.y+this.image.height,"images/bullet.png"));
             this.bulletRate = 0;
             }
         }
