@@ -28,14 +28,15 @@ var GameArea = {
     updateGameArea: function(){
         GameArea.clear();
         GameArea.frameNumber +=1
-        if (GameArea.frameNumber/300 !=1){
+        if (GameArea.frameNumber % 30 ===0){
             Enemies.push(new Enemy("images/enemy.png"))
-        }
-        for (let i=0;i<Enemies.length;i++){
-            Enemies[i].update();
         }
         for (let i=0;i<Bullets.length;i++){
             Bullets[i].update();
+            Bullets[i].crash();
+        }
+        for (let i=0;i<Enemies.length;i++){
+            Enemies[i].update();
         }
         Hrac.changePos();
     }
@@ -95,5 +96,14 @@ class Bullet{
     update(){
         this.x += this.speedX;
         GameArea.context.drawImage(this.image, this.x, this.y);
+    }
+    crash(){
+        for (let j=0;j<Enemies.length;j++){
+            if (this.x <= (Enemies[j].x+Enemies[j].image.width) && this.x >= Enemies[j].x && this.y>=Enemies[j].y && this.y<=(Enemies[j].image.height + Enemies[j].y)){
+                Bullets.splice(Bullets.indexOf(this),1);
+                Enemies.splice(j,1);
+                j = j-1;
+            }
+        }
     }
 }
