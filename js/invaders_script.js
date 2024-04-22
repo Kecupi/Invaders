@@ -49,18 +49,25 @@ class Player{
         this.speedY = 0;
         this.image = new Image;
         this.image.src = imgsrc;
+        this.bulletRate = 0;
     }
     update(){
         GameArea.context.drawImage(this.image, this.x, this.y);
     }
     changePos(){
+        this.bulletRate += 1;
         Hrac.speedX = 0;
         Hrac.speedY = 0;
         if (GameArea.keys && GameArea.keys['ArrowLeft'] && Hrac.x>10) {Hrac.speedX = -15;};
         if (GameArea.keys && GameArea.keys['ArrowRight'] && Hrac.x<(window.innerWidth - 70)) {Hrac.speedX = 15;};
         if (GameArea.keys && GameArea.keys['ArrowUp'] && Hrac.y>10) {Hrac.speedY = -15;};
         if (GameArea.keys && GameArea.keys['ArrowDown'] && Hrac.y<(window.innerHeight-70)) {Hrac.speedY = 15;};
-        if (GameArea.keys && GameArea.keys[" "]) {Bullets.push(new Bullet(this.x,this.y,"images/bullet.png"));};
+        if (this.bulletRate>=20){
+            if (GameArea.keys && GameArea.keys[" "]) {
+            Bullets.push(new Bullet(this.x,this.y,"images/bullet.png"));
+            this.bulletRate = 0;
+            }
+        }
         this.x += this.speedX;
         this.y += this.speedY;
         this.update();
