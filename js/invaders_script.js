@@ -4,35 +4,43 @@ var GameArea = {
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
         this.context = this.canvas.getContext("2d");
+        this.context.font = (window.innerWidth/30)+"px Arial";
+        this.context.fillStyle = "white";
         document.body.insertBefore(this.canvas, document.body.childNodes[0]);
         this.frameNumber = 0;
+        this.running = true;
         this.bossfight = false;
         this.interval = setInterval(this.updateGameArea, 10);
         Hrac = new Player (50, 50, "images/player.gif");
         this.score = 0;
-        this.context.font = "50px Arial";
-        this.context.fillStyle = "white";
         Bos = 0;
         Enemies = [];
         Bullets = [];
         bossBullets = [];
-        window.addEventListener('keydown', function (e) {
+        window.addEventListener('keydown', (e) =>{
             GameArea.keys = (GameArea.keys || []);
             GameArea.keys[e.key] = true;
           })
-        window.addEventListener('keyup', function (e) {
+        window.addEventListener('keyup', (e) =>{
             GameArea.keys[e.key] = false;
           })
-        window.addEventListener('resize',function(e){
-            this.canvas.style.height = window.innerHeight;
-            this.canvas.style.width = window.innerWidth;
-        })
+        window.addEventListener('resize', () =>{
+            this.canvas.width = window.innerWidth;
+            this.canvas.height = window.innerHeight;
+            this.context.font = (window.innerWidth/30)+"px Arial";
+            this.context.fillStyle = "white";
+            Bos.x = window.innerWidth*0.9;
+            this.clear();
+            if (this.running ==true){this.updateScore()} else {this.context.fillText(`Final score: ${this.score}`,(window.innerWidth-this.context.measureText("Final score: " + this.score).width)/2,window.innerHeight/2)}
+        },)
+        
     },
     clear: function(){
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     },
     stop: function(){
         clearInterval(this.interval);
+        this.running = false;
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.context.fillText(`Final score: ${this.score}`,(window.innerWidth-this.context.measureText("Final score: " + this.score).width)/2,window.innerHeight/2);
         
@@ -176,6 +184,7 @@ class Boss{
         GameArea.context.drawImage(this.image, this.x, this.y);
         if(this.hp==0){
             GameArea.bossfight=false;
+            bossBullets = [];
             GameArea.score +=1;
         }
     }
