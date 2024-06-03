@@ -15,6 +15,7 @@ var GameArea = {
         Bos = 0;
         Enemies = [];
         Bullets = [];
+        bossBullets = [];
         window.addEventListener('keydown', function (e) {
             GameArea.keys = (GameArea.keys || []);
             GameArea.keys[e.key] = true;
@@ -97,7 +98,7 @@ class Player{
         if (GameArea.keys && GameArea.keys['ArrowDown'] && Hrac.y<(window.innerHeight-70)) {Hrac.speedY = 15;};
         if (this.bulletRate>=20){
             if (GameArea.keys && GameArea.keys[" "]) {
-            Bullets.push(new Bullet(this.x + this.image.width,this.y,"images/bullet.png"),new Bullet(this.x + this.image.width,this.y+this.image.height,"images/bullet.png"));
+            Bullets.push(new Bullet(this.x + this.image.width,this.y,10,"images/bullet.png"),new Bullet(this.x + this.image.width,this.y+this.image.height,10,"images/bullet.png"));
             this.bulletRate = 0;
             }
         }
@@ -145,11 +146,33 @@ class Boss{
     constructor(imgsrc){
         this.image = new Image;
         this.image.src = imgsrc;
-        this.x = 500;
-        this.y = 400;
+        this.x = window.innerWidth*0.9;
+        this.y = window.innerHeight/2;
         this.hp = 2;
+        this.up = false;
+        this.bulletRate = 0;
     }
     update(){
+        this.bulletRate += 1;
+        if (this.bulletRate>=20){
+            bossBullets.push(new Bullet(this.x + this.image.width,this.y,-10,"images/bullet.png"));
+            this.bulletRate = 0;
+        }
+        for (let i=0;i<bossBullets.length;i++){
+            bossBullets[i].update();
+            bossBullets[i].crashPlayer();
+        }
+        if (this.up == false){
+            this.y+=5;
+            if ((this.y+50)>= window.innerHeight){
+                this.up = true;
+            }
+        } else {
+            this.y-=5;
+            if ((this.y)<= 0){
+                this.up = false;
+            }
+        }
         GameArea.context.drawImage(this.image, this.x, this.y);
         if(this.hp==0){
             GameArea.bossfight=false;
@@ -158,10 +181,10 @@ class Boss{
     }
 }
 class Bullet{
-    constructor(x,y, imgsrc){
+    constructor(x,y, speedX, imgsrc){
         this.x = x;
         this.y = y;
-        this.speedX = 10;
+        this.speedX = speedX;
         this.image = new Image;
         this.image.src = imgsrc; 
     }
@@ -183,6 +206,12 @@ class Bullet{
         if(this.x <= (Bos.x+Bos.image.width) && this.x >= Bos.x && this.y>=Bos.y && this.y<=(Bos.image.height + Bos.y)){
             Bullets.splice(Bullets.indexOf(this),1);
             Bos.hp= Bos.hp-1;
+        }
+    }
+    crashPlayer(){
+        if(this.x <= (Hrac.x+Hrac.image.width) && this.x >= Hrac.x && this.y>=Hrac.y && this.y<=(Hrac.image.height + Hrac.y)){
+            Bullets.splice(Bullets.indexOf(this),1);
+            Hrac.explode = true;
         }
     }
 }
