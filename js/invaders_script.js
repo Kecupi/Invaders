@@ -1,14 +1,38 @@
+startScreen = (text) =>{
+    let start = document.createElement("button");
+    start.textContent = text;
+    start.style.color = "white";
+    start.style.font = ((window.innerWidth+window.innerHeight)/60)+"px Arial";
+    start.style.border = "none";
+    start.style.textDecoration = "none";
+    start.style.background = "none";
+    start.style.position = "absolute";
+    start.style.top = "50%";
+    start.style.left = "50%";
+    start.style.transform = "translate(-50%,-50%)"
+    document.body.insertBefore(start, document.body.childNodes[0]);
+    start.addEventListener("click", () => {
+        GameArea.start();
+        document.body.removeChild(start);
+        document.getElementById("bodyElement").style.cursor = "none";
+    });
+    window.addEventListener("resize", () => {
+        x = start.textContent;
+        document.body.removeChild(start);
+        startScreen(x);
+    })
+};
 var GameArea = {
     canvas: document.createElement("canvas"),
     start: function(){
+        running = true;
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
         this.context = this.canvas.getContext("2d");
-        this.context.font = (window.innerWidth/30)+"px Arial";
+        this.context.font = ((window.innerWidth+window.innerHeight)/60)+"px Arial";
         this.context.fillStyle = "white";
         document.body.insertBefore(this.canvas, document.body.childNodes[0]);
         this.frameNumber = 0;
-        this.running = true;
         this.bossfight = false;
         this.interval = setInterval(this.updateGameArea, 10);
         Hrac = new Player (50, 50, "images/player.gif");
@@ -27,11 +51,15 @@ var GameArea = {
         window.addEventListener('resize', () =>{
             this.canvas.width = window.innerWidth;
             this.canvas.height = window.innerHeight;
-            this.context.font = (window.innerWidth/30)+"px Arial";
+            this.context.font = ((window.innerWidth+window.innerHeight)/60)+"px Arial";
             this.context.fillStyle = "white";
             Bos.x = window.innerWidth*0.9;
             this.clear();
-            if (this.running ==true){this.updateScore()} else {this.context.fillText(`Final score: ${this.score}`,(window.innerWidth-this.context.measureText("Final score: " + this.score).width)/2,window.innerHeight/2)}
+            if (this.interval !=null){
+                this.updateScore()
+            } else {
+                this.context.fillText(`Final Score: ${this.score}`,(window.innerWidth-this.context.measureText("Final score: " + this.score).width)/2,0.9*window.innerHeight/2);
+            }
         },)
         
     },
@@ -40,9 +68,11 @@ var GameArea = {
     },
     stop: function(){
         clearInterval(this.interval);
-        this.running = false;
+        this.interval = null;
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.context.fillText(`Final score: ${this.score}`,(window.innerWidth-this.context.measureText("Final score: " + this.score).width)/2,window.innerHeight/2);
+        this.context.fillText(`Final score: ${this.score}`,(window.innerWidth-this.context.measureText("Final score: " + this.score).width)/2,0.9*window.innerHeight/2);
+        document.getElementById("bodyElement").style.cursor = "default";
+        startScreen("Restart");
         
     },
     updateScore: function(){
