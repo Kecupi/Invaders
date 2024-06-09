@@ -11,8 +11,11 @@ startScreen = (text) =>{
     start.style.left = "50%";
     start.style.transform = "translate(-50%,-50%)"
     document.body.insertBefore(start, document.body.childNodes[0]);
+    
     start.addEventListener("click", () => {
         GameArea.start();
+        document.getElementById("theme").play();
+        document.getElementById("theme").loop = true;
         document.body.removeChild(start);
         document.getElementById("bodyElement").style.cursor = "none";
     });
@@ -25,7 +28,6 @@ startScreen = (text) =>{
 var GameArea = {
     canvas: document.createElement("canvas"),
     start: function(){
-        running = true;
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
         this.context = this.canvas.getContext("2d");
@@ -35,8 +37,8 @@ var GameArea = {
         this.frameNumber = 0;
         this.bossfight = false;
         this.interval = setInterval(this.updateGameArea, 10);
-        Hrac = new Player (50, 50, "images/player.gif");
         this.score = 0;
+        Hrac = new Player (50, 50, "images/player.gif");
         Bos = 0;
         Enemies = [];
         Bullets = [];
@@ -70,9 +72,12 @@ var GameArea = {
         clearInterval(this.interval);
         this.interval = null;
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.context.fillText(`Final score: ${this.score}`,(window.innerWidth-this.context.measureText("Final score: " + this.score).width)/2,0.9*window.innerHeight/2);
+        this.context.fillText(`Final Score: ${this.score}`,(window.innerWidth-this.context.measureText("Final score: " + this.score).width)/2,0.9*window.innerHeight/2);
         document.getElementById("bodyElement").style.cursor = "default";
+        document.getElementById("theme").pause();
+        document.getElementById("theme").currentTime = 0;
         startScreen("Restart");
+        
         
     },
     updateScore: function(){
@@ -82,7 +87,7 @@ var GameArea = {
         GameArea.clear();
         GameArea.frameNumber +=1;
         if (GameArea.bossfight === false){
-            if (GameArea.frameNumber % 30 ===0){
+            if (GameArea.frameNumber % 20 ===0){
                 Enemies.push(new Enemy("images/enemy.png"))
             }
             for (let i=0;i<Enemies.length;i++){
@@ -96,8 +101,8 @@ var GameArea = {
         }
         if (GameArea.score%5 == 0 && GameArea.score !=0 && GameArea.bossfight == false){
             GameArea.bossfight=true;
-            GameArea.clear;
-            Bos = new Boss("images/enemy.png");
+            GameArea.clear();
+            Bos = new Boss("images/boss.png");
             Enemies = [];
         }
         if (GameArea.bossfight == true){
@@ -216,6 +221,7 @@ class Boss{
             GameArea.bossfight=false;
             bossBullets = [];
             GameArea.score +=1;
+            document.getElementById("death_sound").play();
         }
     }
 }
@@ -236,6 +242,7 @@ class Bullet{
             if (this.x <= (Enemies[j].x+Enemies[j].image.width) && this.x >= Enemies[j].x && this.y>=Enemies[j].y && this.y<=(Enemies[j].image.height + Enemies[j].y)){
                 Bullets.splice(Bullets.indexOf(this),1);
                 Enemies.splice(j,1);
+                document.getElementById("death_sound").play();
                 j = j-1;
                 GameArea.score +=1;
             }
